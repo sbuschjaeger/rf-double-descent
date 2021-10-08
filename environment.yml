@@ -1,0 +1,21 @@
+name: rf-dd
+channels:
+  - conda-forge
+  #- gurobi
+  - pytorch
+dependencies:
+  - python=3.8
+  - numpy
+  - pylint
+  - pip
+  - pandas
+  - setuptools
+  - matplotlib
+  #- jupyter
+  #- gurobi
+  #- openpyxl
+  - pytorch 
+  - torchvision 
+  - torchaudio 
+  - cudatoolkit=10.2
+  # - pip:
