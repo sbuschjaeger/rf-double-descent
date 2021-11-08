@@ -1,4 +1,4 @@
-name: rf-dd
+name: rfdd
 channels:
   - conda-forge
   #- gurobi

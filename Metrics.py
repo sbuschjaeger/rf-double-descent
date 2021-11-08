@@ -8,6 +8,22 @@ from Models import DecisionTreeClassifierWithSampleSize
 def accuracy(model, X, target):
     return 100.0*accuracy_score(model.predict_proba(X).argmax(axis=1), target)
 
+def avg_accuracy(model, X, target):
+    base_preds = []
+    if hasattr(model, "estimators_"):
+        for e in model.estimators_:
+            base_preds.append(e.predict_proba(X))
+    else:
+        base_preds.append(model.predict_proba(X))
+    base_preds = np.array(base_preds)
+    return avg_accuracy_with_base(base_preds, target)
+
+def avg_accuracy_with_base(base_preds, target):
+    accs = []
+    for pred in base_preds:
+        accs.append(100.0*accuracy_score(pred.argmax(axis=1), target)) 
+    return np.mean(accs)
+
 def soft_hinge(model, X, target):
     probas = model.predict_proba(X)
 
@@ -18,14 +34,15 @@ def soft_hinge(model, X, target):
 
 def avg_rademacher(model, X, target):
     n_samples = model.n_samples_
-    D = 2*np.log(model.n_features_ + 2) #20 
+    #D = 2*np.log(model.n_features_ + 2) #20 
     r = []
 
     if isinstance(model, (DecisionTreeClassifier, DecisionTreeClassifierWithSampleSize)):
         model.estimators_ = [model]
 
     for e in model.estimators_:
-        rad = np.sqrt( D * ( 4 * e.tree_.node_count + 2 ) / np.sqrt(n_samples + 1 ) )
+        rad = np.sqrt( 2 * e.tree_.node_count * np.log(e.tree_.node_count + model.n_features_) / n_samples )
+        #rad = np.sqrt( D * ( 4 * e.tree_.node_count + 2 ) / np.sqrt(n_samples + 1 ) )
         r.append( rad )
     return np.mean(r)
 
@@ -164,8 +181,8 @@ def c_bound_with_base(base_preds, target):
     adjusted_target_one_hot = np.array( [ [1.0 if y == i else -1.0 for i in range(n_classes)] for y in target] )
 
     delta = 0.1 / 2
-    m1 = np.sqrt(2.0 / n_preds * np.log(np.sqrt(n_preds) / delta))
-    m2 = np.sqrt(2.0 / n_preds * np.log(2.0*np.sqrt(n_preds) / delta))
+    m1 = np.sqrt(2.0 / (n_preds - 1.0) * (4 + np.log(np.sqrt(n_preds-1.0) / delta)))
+    m2 = np.sqrt(2.0 / (n_preds - 2.0) * (8 + np.log(2.0*np.sqrt(n_preds - 2.0) / delta)))
     cbound_per_class = []
     for i in range(n_classes):
         adjusted_preds = base_preds * 2.0 - 1.0
