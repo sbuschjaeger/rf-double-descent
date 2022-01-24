@@ -1,8 +1,6 @@
 # Code for the paper "There is no Double-Descent in Random Forests"
 
-This repository contains the code to run the experiments for our paper called "There is no Double-Descent in Random Forest". In the paper we highlight experiments on the 5 different datasets (adult, bank, eeg, magic, nomao), but this implementation also supports more datasets out of the box. Most of the code should be somewhat commented and self-explanatory given the two caveats below. To run the experiments simply clone this repository
-
-    git@github.com:sbuschjaeger/rf-double-descent.git
+This repository contains the code to run the experiments for our paper called "There is no Double-Descent in Random Forest". In the paper we highlight experiments on the 5 different datasets (adult, bank, eeg, magic, nomao), but this implementation also supports more datasets out of the box. Most of the code should be somewhat commented and self-explanatory given the two caveats below. To run the experiments simply clone this repository.
 
 (Optional) Build the conda environment and activate it:
 
